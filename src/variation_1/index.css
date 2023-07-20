@@ -1,0 +1,6 @@
+.pah .pah000_loaded,
+body.pah000_loaded {
+    & * {
+        outline: 1px solid red !important;
+    }
+}
