@@ -1,0 +1,54 @@
+[
+    {
+        "id": 1,
+        "question": "What size crate are you looking for?",
+        "options": [
+            {
+                "name": "X small",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e06b15e501689837675.png",
+                "filter": "Size-=%22X%20Small%22"
+            },
+            {
+                "name": "small",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e056e1e3b1689837654.png",
+                "filter": "Size-=%22Small%22"
+            },
+            {
+                "name": "medium",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e041a626b1689837633.png",
+                "filter": "Size-=%22Medium%22"
+            },
+            {
+                "name": "large",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e0349aae31689837620.png",
+                "filter": "Size-=%22Large%22"
+            },
+            {
+                "name": "x-large",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e060596f11689837664.png",
+                "filter": "Size-=%22X%20Large%22"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "question": "Single or double door crate?",
+        "options": [
+            {
+                "name": "Single crate door",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e04c1c2181689837644.png",
+                "filter": "Accessory%20Type=%22Single%20Door%20Crate%22"
+            },
+            {
+                "name": "Double crate door",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e01f9df1c1689837599.png",
+                "filter": "Accessory%20Type=%22Double%20Door%20Crate%22"
+            },
+            {
+                "name": "no preference",
+                "img": "https://editor-assets.abtasty.com/47297/64b8e001de4f21689837569.png",
+                "filter": "Accessory%20Type=%22Single%20Door%20Crate%22&Accessory%20Type=%22Double%20Door%20Crate%22"
+            }
+        ]
+    }
+]
