@@ -22,6 +22,8 @@ const config = {
 	entry: {
 		control: `${build_folder}control/index.js`,
 		variation_1: `${build_folder}variation_1/index.js`,
+		variation_2: `${build_folder}variation_2/index.js`,
+		variation_3: `${build_folder}variation_3/index.js`,
 	},
 	node: {
 		__dirname: true,

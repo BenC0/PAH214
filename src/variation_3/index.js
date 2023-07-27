@@ -17,7 +17,7 @@ function action() {
         debug: true,
         variant: this,
         startActive: false,
-        stickyTrigger: false,
+        stickyTrigger: true,
         target: ".container-80",
     })
     crateForm.init()

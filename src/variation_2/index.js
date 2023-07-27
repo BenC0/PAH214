@@ -16,7 +16,7 @@ function action() {
     let crateForm = new CrateForm({
         debug: true,
         variant: this,
-        startActive: false,
+        startActive: true,
         stickyTrigger: false,
         target: ".container-80",
     })

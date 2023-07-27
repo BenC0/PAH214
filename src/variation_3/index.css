@@ -1,0 +1,13 @@
+.pah .pah000_loaded,
+body.pah000_loaded {
+    & aside.side-nav-container.-js-filter-nav {
+        z-index: 0;
+    }
+    & .container-80 {
+        z-index: 1;
+    }
+
+    & .crateForm:not(.active) {
+        display: none;
+    }
+}

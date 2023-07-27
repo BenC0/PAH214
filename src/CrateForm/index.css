@@ -1,0 +1,160 @@
+@font-face {
+    font-weight: normal;
+    font-family: TTCOMMONS;
+    src: url('https://media.petsathome.com/content/fonts/TTCOMMONS/TT_Commons_Pro_DemiBold.woff');
+}
+.pah000_loaded {
+    &  .crateForm,
+    & .crateForm__sticky_trigger_container {
+        --br: 8px;
+        --green: #00AA28;
+        --white: #FFFAF5;
+        user-select: none;
+        font-family: TTCOMMONS;
+    }
+
+    & .crateForm__sticky_trigger_container {
+        left: 1em;
+        bottom: 1em;
+        display: flex;
+        position: fixed;
+        font-size: 13px;
+        color: var(--white);
+        background: #002828;
+        border-radius: var(--br);
+        padding: 9px 18px 9px 12px;
+
+        &:not(.active) {
+            display: none;
+        }
+
+        & .crateForm__sticky_trigger {
+            gap: 1em;
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+            font-family: "Pets Headline";
+        }
+
+        & .close_icon {
+            top: 0;
+            left: 100%;
+            cursor: pointer;
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+    }
+    
+    & .crateForm {
+        display: flex;
+        font-size: 16px;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        margin: 2rem 0 2.1875rem;
+        background: var(--white);
+        border-bottom-left-radius: var(--br);
+        border-bottom-right-radius: var(--br);
+
+        & .crateForm__trigger,
+        & .crateForm__results {
+            padding: 0.9em;
+            font-weight: 600;
+            font-size: 1.125em;
+            font-family: "Pets Headline";
+
+            color: var(--white);
+            border-radius: var(--br);
+            background-color: var(--green);
+            
+            width: 100%;
+            display: flex;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            
+            & .results_icon,
+            & .toggle_icon {
+                position: absolute;
+            }
+        }
+
+        & .crateForm__trigger {
+            cursor: pointer;
+            
+            & .toggle_icon {
+                top: .6666em;
+                right: .8888em;
+            }
+        }
+
+        & .crateForm__results {
+            display: none;
+
+            & .results_icon {
+                top: 100%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        & .question {
+            gap: 1em;
+            width: 100%;
+            display: none;
+            max-width: 710px;
+            text-align: center;
+            flex-direction: column;
+            padding: 1.375em 1em 1.25em;
+            border-bottom-left-radius: var(--br);
+            border-bottom-right-radius: var(--br);
+            
+            & .options {
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+
+                & .option {
+                    display: flex;
+                    cursor: pointer;
+                    padding: 1em 0 0;
+                    flex-direction: column;
+
+                    & .text {
+                        margin-top: 1em;
+                        font-size: .875em;
+                        pointer-events: none;
+                    }
+                }
+            }
+        }
+
+        &.active {
+            & .crateForm__trigger {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            
+                & .toggle_icon {
+                    transform: rotate(45deg);
+                }
+            }
+
+            & .question.active {
+                display: flex;
+            }
+
+            &.results {
+                & .crateForm__results {
+                    display: flex;
+                }
+                & .crateForm__trigger {
+                    display: none;
+                }
+            }
+        }
+
+        & + .our-services {
+            display: none;
+        }
+    }
+}
