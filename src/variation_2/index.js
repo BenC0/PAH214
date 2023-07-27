@@ -18,7 +18,8 @@ function action() {
         variant: this,
         startActive: true,
         stickyTrigger: false,
-        target: ".container-80",
+        targetMethod: "beforeBegin",
+        target: ".our-services, .AMP-hor-gallery",
     })
     crateForm.init()
 }

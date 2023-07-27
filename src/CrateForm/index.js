@@ -1,5 +1,5 @@
 import "./index.css"
-import { TestElement, getHighestZIndex } from "../norman"
+import { TestElement, getHighestZIndex, watchForChange } from "../norman"
 import questions from "./questions.json"
 
 export class CrateForm extends TestElement {
@@ -26,6 +26,7 @@ export class CrateForm extends TestElement {
         this.answers = {}
         this.triggers = []
         this.questions = []
+        this.applying_filters = false
         const sort_by_id = (a, b) => a.id - b.id
         this.config.questions = questions.sort(sort_by_id)
         this.config.questions.map(q => q.options.sort(sort_by_id))
@@ -34,6 +35,7 @@ export class CrateForm extends TestElement {
     init() {
         this.create()
         this.insert()
+        this.override_filter()
         
         this.triggers.forEach(trigger => {
             this.config.debug && console.warn({
@@ -68,7 +70,58 @@ export class CrateForm extends TestElement {
                 })
             })
         }
+
+        let productListNavigation_controller = document.querySelector(`[controllerid="productListNavigation_controller"]`)
+        if(!!productListNavigation_controller) {
+            watchForChange(
+                productListNavigation_controller,
+                _ => {
+                    this.config.debug && console.warn({
+                        "message": "Mutation on 'productListNavigation_controller' detected",
+                    }) 
+                    this.reset_load_state()
+                },
+                {
+                    childList: true,
+                    subtree: false,
+                    attributes: false
+                },
+                `${this.config.variant.id}__observer`,
+            )
+        }
+
         this.config.debug && console.warn({CrateForm: this})
+    }
+
+    set_load_state() {
+        this.config.debug && console.warn({
+            "message": "Setting load state",
+            "this.applying_filters (new)": true,
+            "this.applying_filters (current)": this.applying_filters,
+        }) 
+        this.applying_filters = true
+    }
+
+    reset_load_state() {
+        this.config.debug && console.warn({
+            "message": "Resetting load state",
+            "this.applying_filters (new)": false,
+            "this.applying_filters (current)": this.applying_filters,
+        }) 
+        this.applying_filters = false
+    }
+
+    override_filter() {
+        let original_ui_filter = ui.filter
+        ui.filter = (e) => {
+            console.warn({
+                "msg": "ui.filter called",
+                "event": e,
+            })
+            if(!this.applying_filters) {
+                original_ui_filter(e)
+            }
+        }
     }
 
     option_selection_handler(question, option) {
@@ -126,14 +179,26 @@ export class CrateForm extends TestElement {
             answers,
         })
         let filter_el = document.querySelector(`#facetId${filter}`)
+        let alt_filter = filter.replace(/_/g, " ")
         answers.forEach(answer => {
-            let answer_el = filter_el.querySelector(`[title="${answer}"]`)
+            let answer_el = filter_el.querySelector(`[title="${answer}"], [facet-data='${filter}="${answer}"'], [facet-data='${alt_filter}="${answer}"']`)
+            this.config.debug && console.warn({
+                "function": "staging_filter",
+                filter,
+                answer,
+                answer_el,
+            })
             answer_el.nextElementSibling.checked = true
+            answer_el.nextElementSibling.setAttribute("checked", "checked")
             answer_el.querySelectorAll("li").forEach(e => e.classList.add("active"))
         })
     }
 
     apply_filters() {
+        this.config.debug && console.warn({
+            "function": "apply_filters"
+        })
+        this.set_load_state()
         SearchBasedNavigationDisplayJS.doSearchFilter()
     }
 

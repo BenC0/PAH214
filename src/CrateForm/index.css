@@ -108,6 +108,10 @@
             padding: 1.375em 1em 1.25em;
             border-bottom-left-radius: var(--br);
             border-bottom-right-radius: var(--br);
+
+            & .title {
+                font-weight: 700;
+            }
             
             & .options {
                 display: flex;
@@ -121,7 +125,7 @@
                     flex-direction: column;
 
                     & .text {
-                        margin-top: 1em;
+                        padding-top: 1em;
                         font-size: .875em;
                         pointer-events: none;
                     }
@@ -153,8 +157,62 @@
             }
         }
 
+        & + .AMP-hor-gallery,
         & + .our-services {
             display: none;
+        }
+    }
+
+    & .layout-plp {
+        & .crateForm {
+            padding: 0 .5em;
+            margin: 1em auto 0;
+
+            & .crateForm__trigger {
+                & .text {
+                    font-size: .8em;
+                    padding: .1em 0;
+                }
+            }
+
+            & .question {
+                padding: 1em 0;
+
+                & .options {
+                    gap: 2em;
+                    overflow-x: scroll;
+                    padding: 0 1em 1em;
+                    justify-content: flex-start;
+
+                    --sbfg: #00871E;
+                    --sbbg: #F2F2F2;
+                    --sbs: 5px;
+                    /* Foreground, Background */
+                    scrollbar-color: var(--sbfg) var(--sbbg);
+
+                    &::-webkit-scrollbar-thumb,
+                    &::-webkit-scrollbar-track {
+                        border-radius: var(--sbs);
+                    }
+
+                    &::-webkit-scrollbar {
+                        width: var(--sbs);
+                        height: var(--sbs);
+                    }
+                    &::-webkit-scrollbar-thumb {
+                        background: var(--sbfg);
+                    }
+                    &::-webkit-scrollbar-track {
+                        background: var(--sbbg);
+                    }
+
+                    & .option {
+                        flex-grow: 0;
+                        width: 120px;
+                        flex-shrink: 0;
+                    }
+                }
+            }
         }
     }
 }
