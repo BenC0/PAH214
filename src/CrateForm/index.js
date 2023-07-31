@@ -71,6 +71,29 @@ export class CrateForm extends TestElement {
             })
         }
 
+        let start_again = this.node.querySelectorAll(".start_again")
+        start_again.forEach(s => {
+            s.addEventListener("click", e => {
+                e.preventDefault()
+                this.config.debug && console.warn({
+                    "message": "Start again button clicked",
+                    "element": s
+                })
+                this.reset_form()
+            })
+        })
+        let back = this.node.querySelectorAll(".back")
+        back.forEach(b => {
+            b.addEventListener("click", e => {
+                e.preventDefault()
+                this.config.debug && console.warn({
+                    "message": "Back button clicked",
+                    "element": b
+                })
+                this.previous_question()
+            })
+        })
+
         let productListNavigation_controller = document.querySelector(`[controllerid="productListNavigation_controller"]`)
         if(!!productListNavigation_controller) {
             watchForChange(
@@ -79,6 +102,9 @@ export class CrateForm extends TestElement {
                     this.config.debug && console.warn({
                         "message": "Mutation on 'productListNavigation_controller' detected",
                     }) 
+                    if(!this.applying_filters) {
+                        this.update_options_availability()
+                    }
                     this.reset_load_state()
                 },
                 {
@@ -137,6 +163,32 @@ export class CrateForm extends TestElement {
         this.next_question(question)
     }
 
+    reset_form() {
+        let questions = this.node.querySelectorAll(".question")
+        questions.forEach(question => {
+            question.classList.remove("complete")
+            if (parseInt(question.getAttribute("data-question")) == 1) {
+                question.classList.add("active")
+            } else {
+                question.classList.remove("active")
+            }
+        })
+        this.node.querySelector(".crateForm__results").classList.remove("active")
+        this._class("results", false)
+    }
+
+    previous_question() {
+        let current_question = this.node.querySelector(".question.active")
+        current_question.classList.remove("complete")
+        current_question.classList.remove("active")
+        let previous_question = current_question.previousElementSibling
+        this.config.debug && console.warn({
+            previous_question
+        })
+        previous_question.classList.remove("complete")
+        previous_question.classList.add("active")
+    }
+
     next_question(current_question) {
         current_question._class("complete")
         current_question._class("active", false)
@@ -161,6 +213,7 @@ export class CrateForm extends TestElement {
             "function": "show_results",
             "answers": this.answers,
         })
+        // this.unstage_filters()
         for (const filter in this.answers) {
             if (Object.hasOwnProperty.call(this.answers, filter)) {
                 const answers = this.answers[filter]
@@ -191,6 +244,24 @@ export class CrateForm extends TestElement {
             answer_el.nextElementSibling.checked = true
             answer_el.nextElementSibling.setAttribute("checked", "checked")
             answer_el.querySelectorAll("li").forEach(e => e.classList.add("active"))
+        })
+    }
+
+    unstage_filters() {
+        this.config.debug && console.warn({
+            "function": "unstage_filters",
+        })
+        let filter_el = document.querySelector(`#facetSection`)
+        filter_el.querySelectorAll(`input[checked]`).forEach(answer => {
+            let answer_container = answer.parentNode
+            this.config.debug && console.warn({
+                "function": "unstaging_filter",
+                answer,
+                answer_container,
+            })
+            answer.checked = false
+            answer.removeAttribute("checked")
+            answer_container.querySelectorAll("li").forEach(e => e.classList.remove("active"))
         })
     }
 
@@ -249,23 +320,101 @@ export class CrateForm extends TestElement {
         }
     }
 
+    update_options_availability() {
+        let questions = this.node.querySelectorAll(".question")
+        questions.forEach(question => {
+            let filter = question.getAttribute("data-filter")
+            let options = question.querySelectorAll(".option")
+            let unavailable_options = 0
+            options.forEach(option => {
+                let values = option.getAttribute("data-values").split(",")
+                let is_available = this.check_option_availability({filter}, {values})
+                this.config.debug && console.warn({
+                    "function": "update_options_availability",
+                    filter,
+                    values,
+                    is_available
+                })
+                if (!is_available) {
+                    unavailable_options++
+                }
+                option.setAttribute("available", is_available)
+            })
+            question.setAttribute("unavailable_options", unavailable_options)
+        })
+    }
+
+    check_option_availability(question, option) {
+        let filter = question.filter
+        let filter_el = document.querySelector(`#facetId${filter}`)
+        let alt_filter = filter.replace(/_/g, " ")
+        let answers = option.values
+        let option_availability = true
+        if (!!filter_el) {
+            answers.forEach(answer => {
+                let answer_el = filter_el.querySelector(`[title="${answer}"], [facet-data='${filter}="${answer}"'], [facet-data='${alt_filter}="${answer}"']`)
+                if (!!answer_el == false) {
+                    option_availability = false
+                }
+            })
+        } else {
+            option_availability = false
+        }
+        this.config.debug && console.warn({
+            "function": "check_option_availability",
+            filter,
+            answers,
+            option_availability
+        })
+        return option_availability
+    }
+
     create_question(question) {
         // Create the HTML template for an individual question
         let options = []
+        let unavailable_options = 0
         question.options.forEach(option => {
-            options.push(this.create_option(option))
-        }) 
-        return `<div class="question" data-filter="${question.filter}" data-question="${question.id}">
-            <div class="title">
-                <p class="text"> ${question.question} </p>
-            </div>
-            <div class="options"> ${options.join(" ")} </div>
-        </div>`
+            let option_availability = this.check_option_availability(question, option)
+            if (!option_availability) {
+                unavailable_options++
+            }
+            options.push(this.create_option(option, option_availability))
+        })
+        if (parseInt(question.id) == 1) {
+            return `<div class="question" data-filter="${question.filter}" data-question="${question.id}" unavailable_options="${unavailable_options}" total_options="${options.length}">
+                <div class="title">
+                    <p class="text"> ${question.question} </p>
+                </div>
+                <div class="options"> ${options.join(" ")} </div>
+                <div class="unavailable_msg" onclick="SearchBasedNavigationDisplayJS.clearSearchFilter()">
+                    <p class="text">Some options are unavailable due to the selected filters. Click here to clear all filters.</p>
+                </div>
+            </div>`
+        } else {
+            return `<div class="question" data-filter="${question.filter}" data-question="${question.id}" unavailable_options="${unavailable_options}" total_options="${options.length}">
+                <div class="btns">
+                    <div class="start_again">
+                        <img class="icon" src="https://editor-assets.abtasty.com/47297/64c778dc12bb61690794204.png" />
+                        <p class="text">Start again</p>
+                    </div>
+                    <div class="back">
+                        <p class="text">< Back</p>
+                    </div>
+                </div>
+                <div class="title">
+                    <p class="text"> ${question.question} </p>
+                </div>
+                <div class="options"> ${options.join(" ")} </div>
+                <div class="unavailable_msg" onclick="SearchBasedNavigationDisplayJS.clearSearchFilter()">
+                    <p class="text">Some options are unavailable due to the selected filters. Click here to clear all filters.</p>
+                </div>
+            </div>`
+        }
     }
 
-    create_option(option) {
+    create_option(option, option_availability) {
         // Create the HTML template for an individual option
-        return `<div class="option" data-values="${option.values.join(",")}">
+        return `<div class="option" data-values="${option.values.join(",")}" available="${option_availability}">
             <img class="image" src="${option.img}" alt="${option.name}" />
             <p class="text">${option.name}</p>
         </div>`
@@ -288,6 +437,10 @@ export class CrateForm extends TestElement {
                 <path d="M14.0332 -0.000146866C6.28294 -0.000146866 7.24792e-05 6.28276 7.24792e-05 14.0331C7.24792e-05 21.7835 6.28294 28.0664 14.0332 28.0664C21.7835 28.0664 28.0664 21.7835 28.0664 14.0331C28.0664 6.28276 21.7835 -0.000146866 14.0332 -0.000146866Z" fill="#002828"/>
                 <path d="M8.80023 11.2266L13.9532 16.0879L19.1062 11.2266L20.6891 12.7305L13.9532 19.0852L7.21729 12.7305L8.80023 11.2266Z" fill="#FFFAF5"/>
             </svg>
+            <div class="start_again">
+                <img class="icon" src="https://editor-assets.abtasty.com/47297/64c778dc12bb61690794204.png" />
+                <p class="text">Start again</p>
+            </div>
         </div>`
     }
 

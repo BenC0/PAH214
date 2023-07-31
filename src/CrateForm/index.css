@@ -46,6 +46,7 @@
     }
     
     & .crateForm {
+        width: 100%;
         display: flex;
         font-size: 16px;
         align-items: center;
@@ -112,6 +113,15 @@
             & .title {
                 font-weight: 700;
             }
+
+            & .unavailable_msg {
+                cursor: pointer;
+                padding-top: 1em;
+            }
+
+            &[unavailable_options="0"] .unavailable_msg {
+                display: none;
+            }
             
             & .options {
                 display: flex;
@@ -123,6 +133,12 @@
                     cursor: pointer;
                     padding: 1em 0 0;
                     flex-direction: column;
+
+                    &[available="false"] {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                        pointer-events: none;
+                    }
 
                     & .text {
                         padding-top: 1em;
