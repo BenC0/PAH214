@@ -291,6 +291,7 @@ export class CrateForm extends TestElement {
         })
         this.trigger_html = this.create_trigger()
         this.results_html = this.create_results()
+        this.btns_html = this.create_btns()
         if (this.config.stickyTrigger) {
             this.sticky_trigger_html = this.create_sticky_trigger()
         }
@@ -308,6 +309,7 @@ export class CrateForm extends TestElement {
             })
             this._append(this.results_html)
             this.results = new TestElement(".crateForm__results")
+            this._append(this.btns_html)
             this.questions = this._find(".question")
             this.questions[0]._class("active")
 
@@ -380,36 +382,28 @@ export class CrateForm extends TestElement {
             }
             options.push(this.create_option(option, option_availability))
         })
-        if (parseInt(question.id) == 1) {
-            return `<div class="question" data-filter="${question.filter}" data-question="${question.id}" unavailable_options="${unavailable_options}" total_options="${options.length}">
-                <div class="title">
-                    <p class="text"> ${question.question} </p>
-                </div>
-                <div class="options"> ${options.join(" ")} </div>
-                <div class="unavailable_msg" onclick="SearchBasedNavigationDisplayJS.clearSearchFilter()">
-                    <p class="text">Some options are unavailable due to the selected filters. Click here to clear all filters.</p>
-                </div>
-            </div>`
-        } else {
-            return `<div class="question" data-filter="${question.filter}" data-question="${question.id}" unavailable_options="${unavailable_options}" total_options="${options.length}">
-                <div class="btns">
-                    <div class="start_again">
-                        <img class="icon" src="https://editor-assets.abtasty.com/47297/64c778dc12bb61690794204.png" />
-                        <p class="text">Start again</p>
-                    </div>
-                    <div class="back">
-                        <p class="text">< Back</p>
-                    </div>
-                </div>
-                <div class="title">
-                    <p class="text"> ${question.question} </p>
-                </div>
-                <div class="options"> ${options.join(" ")} </div>
-                <div class="unavailable_msg" onclick="SearchBasedNavigationDisplayJS.clearSearchFilter()">
-                    <p class="text">Some options are unavailable due to the selected filters. Click here to clear all filters.</p>
-                </div>
-            </div>`
-        }
+        return `<div class="question" data-filter="${question.filter}" data-question="${question.id}" unavailable_options="${unavailable_options}" total_options="${options.length}">
+            <div class="title">
+                <p class="text"> ${question.question} </p>
+            </div>
+            <div class="options"> ${options.join(" ")} </div>
+            <div class="unavailable_msg" onclick="SearchBasedNavigationDisplayJS.clearSearchFilter()">
+                <p class="text">Some options are unavailable due to the selected filters. Click here to clear all filters.</p>
+            </div>
+        </div>`
+    }
+
+    create_btns() {
+        return `<div class="btns">
+            <div class="back">
+                <img class="icon" src="https://editor-assets.abtasty.com/47297/64c7a2d454eba1690804948.png" />
+                <p class="text">Back</p>
+            </div>
+            <div class="start_again">
+                <img class="icon" src="https://editor-assets.abtasty.com/47297/64c778dc12bb61690794204.png" />
+                <p class="text">Start again</p>
+            </div>
+        </div>`
     }
 
     create_option(option, option_availability) {

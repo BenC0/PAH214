@@ -49,6 +49,7 @@
         width: 100%;
         display: flex;
         font-size: 16px;
+        position: relative;
         align-items: center;
         flex-direction: column;
         justify-content: center;
@@ -81,6 +82,7 @@
         }
 
         & .crateForm__trigger {
+            order: 0;
             cursor: pointer;
             
             & .toggle_icon {
@@ -90,20 +92,69 @@
         }
 
         & .crateForm__results {
+            order: 0;
             display: none;
+            margin-bottom: 20px;
 
             & .results_icon {
                 top: 100%;
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
+            
+            & .start_again {
+                left: 50%;
+                bottom: -2em;
+                color: #2A2A2A;
+                position: absolute;
+                font-family: TTCOMMONS;
+                transform: translateX(-50%);
+            }
+        }
+
+        & .btns {
+            order: 1;
+            width: 100%;
+            display: none;
+            padding: 12px 18px 0;
+            justify-content: space-between;
+       
+            & .back {
+                gap: .5em;
+                display: flex;
+                cursor: pointer;
+                border-radius: 6px;
+                align-items: center;
+                justify-content: center;
+                padding: 4px 15px 5px 15px;
+                border: 1px solid #858585;
+
+                & .icon {
+                    width: 7px;
+                    height: 10px;
+                }
+            }
+        }
+            
+        & .start_again {
+            gap: .5em;
+            display: flex;
+            cursor: pointer;
+            white-space: nowrap;
+            align-items: center;
+        }
+
+        & [data-question="1"].complete ~ .crateForm__results:not(.active) ~ .btns {
+            display: flex;
         }
 
         & .question {
+            order: 2;
             gap: 1em;
             width: 100%;
             display: none;
             max-width: 710px;
+            position: relative;
             text-align: center;
             flex-direction: column;
             padding: 1.375em 1em 1.25em;
@@ -189,6 +240,10 @@
                     font-size: .8em;
                     padding: .1em 0;
                 }
+            }
+
+            & .crateForm__results {
+                margin-bottom: 40px;
             }
 
             & .question {
